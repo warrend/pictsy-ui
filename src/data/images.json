@@ -1,0 +1,16 @@
+{
+	"images": [
+		{
+			"image": "Brooklyn",
+			"metadata": "Brooklyn"
+		},
+		{
+			"image": "Manhattan",
+			"metadata": "Manhattan"
+		},
+		{
+			"image": "Staten Island",
+			"metadata": "Staten Island"
+		}
+	]
+}
