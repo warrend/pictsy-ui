@@ -1,35 +1,82 @@
-import React, { Component } from 'react';
-import Picture from '../components/Picture'
-import data from '../data/images.json'
+import React, { Component } from 'react'
+import GalleryPicture from '../components/GalleryPicture'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import * as actions from '../actions/imagesActions'
+import _ from 'lodash'
+import { Search } from 'semantic-ui-react'
 
 class Gallery extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			images: data.images,
-			searchTerm: ''
+			value: '',
+			results: this.props.gallery,
+			isLoading: false
 		}
 	}
 
-	handleSearchChange = (event) => {
-		this.setState({ searchTerm: event.target.value.toLowerCase() })
-	}
+	componentWillMount() {
+    this.resetComponent()
+  }
+
+  resetComponent = () => this.setState({ isLoading: false, results: this.props.gallery, value: '' })
+
+  handleResultSelect = (e, { result }) => this.setState({ value: result.metadata })
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ isLoading: true, value })
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.resetComponent()
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      const isMatch = result => re.test(result.metadata)
+
+      this.setState({
+        isLoading: false,
+        results: _.filter(this.props.gallery, isMatch),
+      })
+    }, 500)
+  }
 
   render() {
-  	const images = this.state.images
+  	const { isLoading, value, results } = this.state
     return (
-      <div>
-      	<form onSubmit={this.handleSubmit} id="message-form">
-           <input type="text" id="searchTerm" value={this.state.searchTerm} onChange={this.handleSearchChange} name="searchTerm" />
-          <input type="submit" value="Submit" />
-        </form>
-      	{images.filter(word => word.metadata.toLowerCase().includes(this.state.searchTerm)).map((img, key) => {
-      		return <div><p>{img.image}</p></div>
-      	})}
+      <div className="container">
+      	<header>
+			    <h1><i aria-hidden="true" className="empty star small red icon"></i>Pictsy</h1>
+			    <div className="search">
+			      <Search
+            loading={isLoading}
+            onResultSelect={this.handleResultSelect}
+            onSearchChange={this.handleSearchChange}
+            results={results}
+            value={value}
+            placeholder="neighborhood..."
+            {...this.props}
+          />
+			    </div>
+			  </header>
+			  <div className="grid">
+	      	{results.map((img, key) => {
+	      		return <GalleryPicture img={img} key={key} />
+	      	})}
+      	</div>
       </div>
     );
   }
+}	
+
+const mapStateToProps = state => {
+  return {
+    gallery: state.gallery
+  }
 }
 
-export default Gallery;
+const mapDispatchToProps = dispatch => {
+  return {actions: bindActionCreators(actions, dispatch)}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Gallery)
