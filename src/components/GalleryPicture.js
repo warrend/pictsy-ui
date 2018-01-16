@@ -6,7 +6,7 @@ const GalleryPicture = (props) => {
 	const { id, description, link } = props.img
 	const comments = props.comments.filter(comment => comment.id === id)
 	return (
-		<div class="picture">
+		<div className="picture">
       <Link to={`/images/${id}`}>
         <img src={link} alt={description} />
         <div className="overlay">

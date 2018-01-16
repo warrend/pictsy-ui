@@ -9,3 +9,5 @@ Can filter by hashtag, leave comments (with no db persistence), and scroll throu
 Clone this repo, cd into the directory, then run `npm install`
 
 To start the application, run `npm start`
+
+[Video demo](https://youtu.be/imsR_B4ULPE)

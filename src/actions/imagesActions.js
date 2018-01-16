@@ -19,6 +19,7 @@ export function fetchImages() {
     	}
     })
       .then(res => res.json())
+      .catch(error => console.error('Error loading images!', error))
       .then(images => dispatch({type: 'FETCH_IMAGES', payload: images.data}))
   }
 }
