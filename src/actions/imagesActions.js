@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch'
 
 export function addComment(comment) {
   return function(dispatch) {
@@ -15,7 +15,7 @@ export function fetchImages() {
     'https://api.imgur.com/3/album/vx1Zn/images/', {
     	method: 'GET',
     	headers: {
-    		Authorization: 'Client-ID 716e0003e64c2ff'
+    		Authorization: `Client-ID ${process.env.REACT_APP_CLIENT_ID}`
     	}
     })
       .then(res => res.json())
