@@ -17,22 +17,22 @@ class Gallery extends Component {
 		}
 	}
 
-	componentWillMount() {
-    this.resetComponent()
-  }
+	componentWillReceiveProps(nextProps) {
+	  if(this.props !== nextProps) {
+	  	this.resetComponent(nextProps)
+	  }
+	}
 
-  resetComponent = () => this.setState({ isLoading: false, results: this.props.gallery, value: '' })
+  resetComponent = (nextProps) => this.setState({ isLoading: false, results: nextProps.gallery, value: '' })
 
-  handleResultSelect = (e, { result }) => this.setState({ value: result.metadata })
+  handleResultSelect = (e, { result }) => this.setState({ value: result.description })
 
   handleSearchChange = (e, { value }) => {
     this.setState({ isLoading: true, value })
 
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.resetComponent()
-
       const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      const isMatch = result => re.test(result.metadata)
+      const isMatch = result => re.test(result.description)
 
       this.setState({
         isLoading: false,
@@ -61,7 +61,7 @@ class Gallery extends Component {
 			  </header>
 			  <div className="grid">
 	      	{results.map((img, key) => {
-	      		return <GalleryPicture img={img} key={key} />
+	      		return <GalleryPicture img={img} key={key} comments={this.props.comments} />
 	      	})}
       	</div>
       </div>
@@ -71,7 +71,8 @@ class Gallery extends Component {
 
 const mapStateToProps = state => {
   return {
-    gallery: state.gallery
+    gallery: state.gallery,
+    comments: state.comments
   }
 }
 

@@ -32,7 +32,12 @@ class SinglePicture extends Component {
   handleSubmit = (event) => {
     event.preventDefault()
     const id = this.props.match.params.id
-    this.props.actions.addComment(this.state, id)
+    const newComment = {
+      id: id,
+      comment: this.state.comment,
+      date: this.state.date
+    }
+    this.props.actions.addComment(newComment)
     this.setState({  comment: '' })
   }
 
@@ -50,32 +55,33 @@ class SinglePicture extends Component {
   }
 
   render() {
-    const url = this.props.match.url
     const id = this.props.match.params.id
-    const picture = this.props.gallery[id]
-    const forward = (parseInt(id, 10) + 1) % (this.props.gallery.length - 1) 
+    const picture = Object.assign({}, this.props.gallery.find(img => img.id === id))
+    const comments = this.props.comments.filter(comment => comment.id === id)
+    const ids = this.props.gallery.map(img => img.id)
     return (
-      <div class="single">
+      <div className="single">
         <header className="container">
           <Link to={process.env.PUBLIC_URL + '/'}><h1><i aria-hidden="true" className="empty star small red icon"></i>Pictsy</h1></Link>
         </header>
         <div class="container-img">
-          <img src={process.env.PUBLIC_URL + url + '.jpg'} alt={picture.description} />
-          <p className="img-description">{picture.description} / <i aria-hidden="true" className="comment circular inverted small red icon"></i>{picture.comments.length}</p>
-          <Navigation id={id} forward={forward} back={this.back(id)} />
+          <img src={'https://i.imgur.com/' + id + '.jpg'} alt={picture.description} />
+          <p className="img-description">{picture.description} / <i aria-hidden="true" className="comment circular inverted small red icon"></i>{comments.length}</p>
+          <Navigation id={id} ids={ids} />
         </div>
         <Comment.Group className="container-comments">
-          <Comments picture={picture} />
+          <Comments comments={comments} />
           <CommentsForm handleSubmit={this.handleSubmit} handleChange={this.handleChange} state={this.state} /> 
         </Comment.Group>  
-      </div>
+      </div> 
     )
   }
 }
 
 const mapStateToProps = state => {
   return {
-    gallery: state.gallery
+    gallery: state.gallery,
+    comments: state.comments
   }
 }
 

@@ -6,13 +6,10 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 import App from './containers/App'
-import data from './data/images.json'
 import registerServiceWorker from './registerServiceWorker'
 
-const persistedState = {gallery: data}
-
 const store = createStore(
-	rootReducer, persistedState, compose(applyMiddleware(thunk), 
+	rootReducer, compose(applyMiddleware(thunk), 
 	window.devToolsExtension ? window.devToolsExtension() : f => f)
 )
 

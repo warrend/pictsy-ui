@@ -2,7 +2,7 @@ import React from 'react'
 import { Comment, Header } from 'semantic-ui-react'
 
 const Comments = (props) => {
-  const comments = props.picture.comments
+  const comments = props.comments
   if (comments.length === 0) {
     return (
       <Comment.Group>
